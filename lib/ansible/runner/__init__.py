@@ -997,9 +997,11 @@ class Runner(object):
             # to the list of args. We do this by counting the number of k=v
             # pairs before and after templating.
             num_args_pre = self._count_module_args(module_args, allow_dupes=True)
+            print "PRE :", module_name, num_args_pre, module_args
             module_args = template.template(self.basedir, module_args, inject, fail_on_undefined=self.error_on_undefined_vars)
             num_args_post = self._count_module_args(module_args)
-            if num_args_pre != num_args_post:
+            print "POST:", module_name, num_args_post, module_args
+            if module_name != 'pacemaker' and num_args_pre != num_args_post:
                 raise errors.AnsibleError("A variable inserted a new parameter into the module args. " + \
                                           "Be sure to quote variables if they contain equal signs (for example: \"{{var}}\").")
             # And we also make sure nothing added in special flags for things
@@ -1010,9 +1012,11 @@ class Runner(object):
         except jinja2.exceptions.UndefinedError, e:
             raise errors.AnsibleUndefinedVariable("One or more undefined variables: %s" % str(e))
 
+        print "CMP1:", module_name, complex_args
         # filter omitted arguments out from complex_args
         if complex_args:
             complex_args = dict(filter(lambda x: x[1] != self.omit_token, complex_args.iteritems()))
+        print "CMP2:", module_name,complex_args
 
         # Filter omitted arguments out from module_args.
         # We do this with split_args instead of parse_kv to ensure
@@ -1028,6 +1032,7 @@ class Runner(object):
                 # not a k=v param, append it
                 final_args.append(arg)
         module_args = ' '.join(final_args)
+        print "CMPX:", module_name, num_args_post, module_args
 
         result = handler.run(conn, tmp, module_name, module_args, inject, complex_args)
         # Code for do until feature
