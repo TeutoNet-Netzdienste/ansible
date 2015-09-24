@@ -9,6 +9,10 @@ New Modules:
 
 Other Notable Changes:
 
+## 1.9.2 "Dancing In the Street" -  TBD
+
+* Added workaround for pacemaker module
+
 ## 1.9.1 "Dancing In the Street" -  TBD
 
 * Fixing several bugs in the s3 module.
